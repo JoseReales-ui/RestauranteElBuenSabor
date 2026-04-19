@@ -6,23 +6,24 @@ public class RestauranteElBuenSabor {
 
     public static void main(String[] args) {
 
-        Scanner sc = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
 
-        int op = 0;
-        boolean flag = true;
-        int x = 0;
-        String aux = "";
-        int tmp = 0;
-        double m = 0;
+        int opcionMenu = 0;
+        boolean ejecutarMenu = true;
+        int intentosInvalidos = 0;
+
+        String mensajeAuxiliar = "";
+        int valorTemporal = 0;
+        double montoAuxiliar = 0;
         boolean continuar = true;
 
         System.out.println("========================================");
-        System.out.println("    RESTAURANTE EL BUEN SABOR");
+        System.out.println("    " + DatosSistema.nombreRestaurante);
         System.out.println("    Calle 15 #8-32, Valledupar");
         System.out.println("    NIT: 900.123.456-7");
         System.out.println("========================================");
 
-        while (flag) {
+        while (ejecutarMenu) {
 
             System.out.println("1. Ver carta");
             System.out.println("2. Agregar producto al pedido");
@@ -33,153 +34,186 @@ public class RestauranteElBuenSabor {
             System.out.println("========================================");
             System.out.print("Seleccione una opcion: ");
 
-            op = sc.nextInt();
+            opcionMenu = scanner.nextInt();
 
-            if (op == 1) {
+            if (opcionMenu == 1) {
 
-                Imprimir.mostrarCarta();
+                ImpresionFactura.mostrarCarta();
                 System.out.println();
 
-            } else if (op == 2) {
+            } else if (opcionMenu == 2) {
 
                 System.out.println("--- AGREGAR PRODUCTO ---");
-                System.out.print("Numero de producto (1-" + Datos.nom.length + "): ");
+                System.out.print(
+                        "Numero de producto (1-"
+                                + DatosSistema.nombresProductos.length
+                                + "): "
+                );
 
-                int n = sc.nextInt();
+                int numeroProducto = scanner.nextInt();
 
                 System.out.print("Cantidad: ");
+                int cantidad = scanner.nextInt();
 
-                int c = sc.nextInt();
+                if (
+                        numeroProducto > 0
+                                && numeroProducto <= DatosSistema.nombresProductos.length
+                ) {
 
-                if (n > 0 && n <= Datos.nom.length) {
+                    if (cantidad > 0) {
 
-                    if (c > 0) {
+                        if (DatosSistema.estadoMesa == 0) {
 
-                        if (Datos.est == 0) {
                             System.out.print("Ingrese numero de mesa: ");
-                            Datos.ms = sc.nextInt();
+                            DatosSistema.numeroMesa = scanner.nextInt();
 
-                            if (Datos.ms > 0) {
-                                Datos.est = 1;
-                                aux = String.valueOf(Datos.ms);
-                                tmp = Datos.ms;
-                                x = tmp + 1;
+                            if (DatosSistema.numeroMesa > 0) {
+                                DatosSistema.estadoMesa = 1;
+                                mensajeAuxiliar =
+                                        String.valueOf(DatosSistema.numeroMesa);
+                                valorTemporal = DatosSistema.numeroMesa;
+                                intentosInvalidos = valorTemporal + 1;
                             } else {
-                                Datos.ms = 1;
-                                Datos.est = 1;
-                                aux = "1";
-                                tmp = 1;
-                                x = 2;
+                                DatosSistema.numeroMesa = 1;
+                                DatosSistema.estadoMesa = 1;
+                                mensajeAuxiliar = "1";
+                                valorTemporal = 1;
+                                intentosInvalidos = 2;
                             }
                         }
 
-                        Datos.cant[n - 1] = Datos.cant[n - 1] + c;
+                        DatosSistema.cantidades[numeroProducto - 1] =
+                                DatosSistema.cantidades[numeroProducto - 1]
+                                        + cantidad;
 
                         System.out.println("Producto agregado al pedido.");
-                        System.out.println("  -> " + Datos.nom[n - 1] + " x" + c);
+                        System.out.println(
+                                "  -> "
+                                        + DatosSistema.nombresProductos[numeroProducto - 1]
+                                        + " x"
+                                        + cantidad
+                        );
 
-                        m = Datos.p[n - 1] * c;
+                        montoAuxiliar =
+                                DatosSistema.precios[numeroProducto - 1]
+                                        * cantidad;
 
                     } else {
 
-                        if (c == 0) {
-                            System.out.println("La cantidad no puede ser cero.");
+                        if (cantidad == 0) {
+                            System.out.println(
+                                    "La cantidad no puede ser cero."
+                            );
                         } else {
-                            System.out.println("Cantidad invalida. Ingrese un valor positivo.");
+                            System.out.println(
+                                    "Cantidad invalida. Ingrese un valor positivo."
+                            );
                         }
                     }
 
                 } else {
 
-                    if (n <= 0) {
-                        System.out.println("El numero debe ser mayor a cero.");
+                    if (numeroProducto <= 0) {
+                        System.out.println(
+                                "El numero debe ser mayor a cero."
+                        );
                     } else {
                         System.out.println(
                                 "Producto no existe. La carta tiene "
-                                        + Datos.nom.length + " productos."
+                                        + DatosSistema.nombresProductos.length
+                                        + " productos."
                         );
                     }
                 }
 
                 System.out.println();
 
-            } else if (op == 3) {
+            } else if (opcionMenu == 3) {
 
                 System.out.println();
 
-                if (Utilidades.validar()) {
-                    Imprimir.mostrarPedido();
+                if (UtilidadesPedido.hayProductosEnPedido()) {
+                    ImpresionFactura.mostrarPedido();
                 } else {
-                    System.out.println("No hay productos en el pedido actual.");
-                    System.out.println("Use la opcion 2 para agregar productos.");
+                    System.out.println(
+                            "No hay productos en el pedido actual."
+                    );
+                    System.out.println(
+                            "Use la opcion 2 para agregar productos."
+                    );
                     continuar = true;
                 }
 
                 System.out.println();
 
-            } else if (op == 4) {
+            } else if (opcionMenu == 4) {
 
                 System.out.println();
 
-                if (Utilidades.validar()) {
-                    double r = 0;
+                if (UtilidadesPedido.hayProductosEnPedido()) {
 
-                    r = Proceso.hacerTodo();
-                    tmp = (int) r;
-                    aux = "Total calculado: $" + tmp;
-                    m = r;
+                    double totalFactura =
+                            CalculadorFactura.calcularTotalFactura();
 
-                    Imprimir.imprimirFacturaCompleta();
+                    valorTemporal = (int) totalFactura;
+                    mensajeAuxiliar =
+                            "Total calculado: $" + valorTemporal;
+                    montoAuxiliar = totalFactura;
+
+                    ImpresionFactura.imprimirFacturaCompleta();
                     System.out.println();
 
                 } else {
+
                     System.out.println("No se puede generar factura.");
                     System.out.println("No hay productos en el pedido.");
-                    System.out.println("Use la opcion 2 para agregar productos primero.");
+                    System.out.println(
+                            "Use la opcion 2 para agregar productos primero."
+                    );
 
-                    tmp = 0;
-                    aux = "";
-                    m = 0;
+                    valorTemporal = 0;
+                    mensajeAuxiliar = "";
+                    montoAuxiliar = 0;
                     continuar = true;
                 }
 
-            } else if (op == 5) {
+            } else if (opcionMenu == 5) {
 
                 System.out.println();
-                Utilidades.reiniciar();
 
-                x = 0;
-                tmp = 0;
-                aux = "";
-                m = 0;
+                UtilidadesPedido.reiniciarPedido();
+
+                intentosInvalidos = 0;
+                valorTemporal = 0;
+                mensajeAuxiliar = "";
+                montoAuxiliar = 0;
                 continuar = true;
 
-                System.out.println("Mesa reiniciada. Lista para nuevo cliente.");
+                System.out.println(
+                        "Mesa reiniciada. Lista para nuevo cliente."
+                );
                 System.out.println();
 
-            } else if (op == 0) {
+            } else if (opcionMenu == 0) {
 
-                flag = false;
+                ejecutarMenu = false;
                 System.out.println("Hasta luego!");
 
             } else {
 
-                System.out.println("Opcion no valida. Seleccione entre 0 y 5.");
+                System.out.println(
+                        "Opcion no valida. Seleccione entre 0 y 5."
+                );
 
-                Scanner sc2 = new Scanner(System.in);
+                intentosInvalidos++;
 
-                x = x + 1;
-
-                if (x > 3) {
+                if (intentosInvalidos > 3) {
                     System.out.println("Demasiados intentos invalidos.");
-                    x = 0;
-
-                    String s2 = sc2.hasNextLine()
-                            ? sc2.nextLine()
-                            : "";
+                    intentosInvalidos = 0;
                 }
             }
         }
-        sc.close();
+
+        scanner.close();
     }
 }
