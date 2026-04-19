@@ -27,10 +27,12 @@ public class Factura {
         return subtotal;
     }
 
+    // El IVA se calcula sobre el subtotal con descuento
     public double calcularIva() {
         return calcularSubtotalConDescuento() * TASA_IVA;
     }
 
+    // La propina solo aplica si el total con IVA supera el umbral
     public double calcularPropina() {
         double base = calcularSubtotalConDescuento() + calcularIva();
 

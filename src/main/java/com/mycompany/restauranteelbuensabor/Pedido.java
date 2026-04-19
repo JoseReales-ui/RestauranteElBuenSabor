@@ -8,7 +8,7 @@ public class Pedido {
     private final List<ItemPedido> items = new ArrayList<>();
 
     public void agregarProducto(Producto producto, int cantidad) {
-
+        // Si el producto ya existe en el pedido, se suma la cantidad
         for (ItemPedido item : items) {
             if (item.getProducto().equals(producto)) {
                 item.agregarCantidad(cantidad);
